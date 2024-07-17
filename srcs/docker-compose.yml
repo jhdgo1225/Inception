@@ -1,0 +1,41 @@
+version: "3.7"
+services:
+    nginx:
+        build:
+            context: ./requirements/nginx
+        ports:
+            - "80:80"
+        depends_on:
+            - php-fpm
+        network:
+            - jonghopa
+    wordpress:
+        build:
+            context: ./requirements/wordpress
+        environment:
+            - WORDPRESS_DB_HOST=mariadb
+            - WORDPRESS_DB_USER=root
+            - WORDPRESS_DB_PASSWORD=rootpassword
+            - WORDPRESS_DB_NAME=wordpress
+        volumes:
+            - ./data/WordPress:/
+        depends_on:
+            - mariadb
+        network:
+            - jonghopa
+    mariadb:
+        build:
+            context: ./requirements/mariadb
+        environment:
+            - MYSQL_ROOT_PASSWORD=rootpassword
+            - MYSQL_DATABASE=wordpress
+            - MYSQL_USER=root
+            - MYSQL_PASSWORD=rootpassword
+        volumes:
+            - ./data/DB:/var/lib/mysql
+        network:
+            - jonghopa
+
+network:
+    jonghopa:
+        driver: bridge

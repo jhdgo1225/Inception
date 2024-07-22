@@ -4,25 +4,27 @@ services:
         build:
             context: ./requirements/nginx
         volumes:
-            - data/WordPress:/var/lib/nginx/html
+            - ./data/WordPress:/var/lib/nginx/html
         expose:
             - 443
         ports:
             - "433:433"
+        restart: always
         depends_on:
-            - php-fpm
-        network:
+            - wordpress
+        networks:
             - jonghopa
     wordpress:
         build:
             context: ./requirements/wordpress
         volumes:
-            - data/WordPress:/var/lib/nginx/html
+            - ./data/WordPress:/var/lib/nginx/html
         expose:
             - 9000
+        restart: always
         depends_on:
             - mariadb
-        network:
+        networks:
             - jonghopa
     mariadb:
         build:
@@ -31,9 +33,10 @@ services:
             - ./data/DB:/var/lib/mysql
         expose:
             - 3306
-        network:
+        restart: always
+        networks:
             - jonghopa
 
-network:
+networks:
     jonghopa:
         driver: bridge

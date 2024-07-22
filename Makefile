@@ -1,8 +1,8 @@
 build:
-	@docker-compose up -d 
+	@docker-compose -f ./srcs/docker-compose.yml up -d
 
 rm:
-	@docker-compose down
+	@docker-compose -f ./srcs/docker-compose.yml stop
 
 re:
 	@make rm

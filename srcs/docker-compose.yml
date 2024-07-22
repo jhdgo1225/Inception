@@ -3,8 +3,12 @@ services:
     nginx:
         build:
             context: ./requirements/nginx
+        volumes:
+            - data/WordPress:/var/lib/nginx/html
+        expose:
+            - 443
         ports:
-            - "80:80"
+            - "433:433"
         depends_on:
             - php-fpm
         network:
@@ -12,13 +16,10 @@ services:
     wordpress:
         build:
             context: ./requirements/wordpress
-        environment:
-            - WORDPRESS_DB_HOST=mariadb
-            - WORDPRESS_DB_USER=root
-            - WORDPRESS_DB_PASSWORD=rootpassword
-            - WORDPRESS_DB_NAME=wordpress
         volumes:
-            - ./data/WordPress:/
+            - data/WordPress:/var/lib/nginx/html
+        expose:
+            - 9000
         depends_on:
             - mariadb
         network:
@@ -26,13 +27,10 @@ services:
     mariadb:
         build:
             context: ./requirements/mariadb
-        environment:
-            - MYSQL_ROOT_PASSWORD=rootpassword
-            - MYSQL_DATABASE=wordpress
-            - MYSQL_USER=root
-            - MYSQL_PASSWORD=rootpassword
         volumes:
             - ./data/DB:/var/lib/mysql
+        expose:
+            - 3306
         network:
             - jonghopa
 

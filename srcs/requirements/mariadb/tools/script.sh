@@ -1,19 +1,26 @@
-openrc boot
-chown -R mysql:mysql /var/lib/mysql
-chown -R mysql:mysql /run/mysqld
-rc-service mariadb start
-rc-update add mariadb default
+#!/bin/sh
 
-cd /var/lib/mysql
-cat << EOF > wordpressSetting
-CREATE DATABASE ${MYSQL_DATABASE_NAME};
-GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE_NAME}.* TO '${MYSQL_ROOT}'@'${DOMAIN_NAME}' IDENTIFIED BY '${MYSQL_DATABASE_PASSWORD}';
+mkdir -p /run/mysqld
+mysql_install_db --user=mysql --ldata=/var/lib/mysql
+chown -R mysql:mysql /run/mysqld
+chown -R mysql:mysql /var/lib/mysql
+chmod 777 /var/lib/mysql
+
+cat << EOF > /tmp/tmpFile
+CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE_NAME;
+GRANT ALL PRIVILEGES ON $MYSQL_DATABASE_NAME.* TO '$MYSQL_ROOT_NAME'@'localhost' IDENTIFIED BY '$MYSQL_DATABASE_PASSWORD';
+GRANT ALL PRIVILEGES ON $MYSQL_DATABASE_NAME.* TO '$MYSQL_ROOT_NAME'@'%' IDENTIFIED BY '$MYSQL_DATABASE_PASSWORD';
 DELETE FROM mysql.user WHERE User='';
 DROP DATABASE IF EXISTS test;
 FLUSH PRIVILEGES;
 EOF
 
-mysql -u root < wordpressSetting
-rm -f wordpressSetting
+openrc boot
 
-rc-service mariadb restart
+rc-update add mariadb default
+rc-service mariadb start
+
+mysql -u root < /tmp/tmpFile
+
+rc-service mariadb stop
+exec /usr/bin/mysqld_safe --user=mysql --datadir="/var/lib/mysql"

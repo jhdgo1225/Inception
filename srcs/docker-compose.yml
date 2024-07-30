@@ -6,7 +6,7 @@ services:
             args:
                 DOMAIN_NAME: ${DOMAIN_NAME}
         volumes:
-            - ./data/WordPress:/var/lib/nginx/html
+            - /home/jonghopa/data/WordPress:/var/lib/nginx/html
         environment:
             WEB_ROOT_DIRECTORY: ${WEBSERV_ROOT_DIRECTORY}
             SSL_PRIVATE_KEY: ${SSL_PRIVATE_KEY}
@@ -52,7 +52,7 @@ services:
             WORDPRESS_NORMAL_USER_EMAIL: ${WORDPRESS_NORMAL_USER_EMAIL}
             WORDPRESS_NORMAL_USER_PASSWORD: ${WORDPRESS_NORMAL_USER_PASSWORD}
         volumes:
-            - ./data/WordPress:/var/lib/nginx/html
+            - /home/jonghopa/data/WordPress:/var/lib/nginx/html
         depends_on:
             - mariadb
         expose:
@@ -71,7 +71,7 @@ services:
             MYSQL_USER_NAME: ${MYSQL_USER_NAME}
             MYSQL_USER_PASSWORD: ${MYSQL_USER_PASSWORD}
         volumes:
-            - ./data/DB:/var/lib/mysql
+            - /home/jonghopa/data/DB:/var/lib/mysql
         expose:
             - 3306
         restart: always

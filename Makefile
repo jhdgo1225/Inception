@@ -1,11 +1,15 @@
 build:
-	@docker-compose -f ./srcs/docker-compose.yml up --build -d
+	@docker-compose -f ./srcs/docker-compose.yml up -d
 
-rm:
+clean:
 	@docker-compose -f ./srcs/docker-compose.yml down
 
+fclean:
+	@make clean
+	@docker image rm -f srcs-nginx srcs-wordpress srcs-mariadb
+
 re:
-	@make rm
+	@make fclean
 	@make build
 
-.PHONY: build rm re
+.PHONY: build clean fclean re

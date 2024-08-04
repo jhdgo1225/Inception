@@ -3,16 +3,8 @@ services:
         container_name: nginx
         build:
             context: ./requirements/nginx
-            args:
-                DOMAIN_NAME: ${DOMAIN_NAME}
         volumes:
-            - /home/jonghopa/data/WordPress:/var/lib/nginx/html
-        environment:
-            WEB_ROOT_DIRECTORY: ${WEBSERV_ROOT_DIRECTORY}
-            SSL_PRIVATE_KEY: ${SSL_PRIVATE_KEY}
-            SSL_CERT: ${SSL_CERT}
-            DOMAIN_NAME: ${DOMAIN_NAME}
-            NGINX_CONF_FILE: ${NGINX_CONF_FILE}
+            - ft_wp:/var/lib/nginx/html
         expose:
             - 443
         ports:
@@ -52,7 +44,7 @@ services:
             WORDPRESS_NORMAL_USER_EMAIL: ${WORDPRESS_NORMAL_USER_EMAIL}
             WORDPRESS_NORMAL_USER_PASSWORD: ${WORDPRESS_NORMAL_USER_PASSWORD}
         volumes:
-            - /home/jonghopa/data/WordPress:/var/lib/nginx/html
+            - ft_wp:/var/lib/nginx/html
         depends_on:
             - mariadb
         expose:
@@ -71,12 +63,28 @@ services:
             MYSQL_USER_NAME: ${MYSQL_USER_NAME}
             MYSQL_USER_PASSWORD: ${MYSQL_USER_PASSWORD}
         volumes:
-            - /home/jonghopa/data/DB:/var/lib/mysql
+            - ft_db:/var/lib/mysql
         expose:
             - 3306
         restart: always
         networks:
             - jonghopa
+
+volumes:
+  ft_wp:
+    name: ft_wp
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/jonghopa/data/wp/
+  ft_db:
+    name: ft_db
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/jonghopa/data/db/
 
 networks:
     jonghopa:

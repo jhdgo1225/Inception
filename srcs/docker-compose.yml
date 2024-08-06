@@ -1,5 +1,6 @@
 services:
     nginx:
+        image: nginx
         container_name: nginx
         build:
             context: ./requirements/nginx
@@ -15,6 +16,7 @@ services:
         networks:
             - jonghopa
     wordpress:
+        image: wordpress
         container_name: wordpress
         build:
             context: ./requirements/wordpress
@@ -44,6 +46,7 @@ services:
         networks:
             - jonghopa
     mariadb:
+        image: mariadb
         container_name: mariadb
         build:
             context: ./requirements/mariadb
@@ -79,4 +82,5 @@ volumes:
 
 networks:
     jonghopa:
+        name: jonghopa
         driver: bridge

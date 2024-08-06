@@ -1,15 +1,25 @@
 build:
-	@docker-compose -f ./srcs/docker-compose.yml up -d
+	@mkdir -p /home/jonghopa/data/wp
+	@mkdir -p /home/jonghopa/data/db
+	@docker-compose -f ./srcs/docker-compose.yml up -d --build
+
+down:
+	@docker-compose -f ./srcs/docker-compose.yml down
 
 clean:
-	@docker-compose -f ./srcs/docker-compose.yml down
+	@make down
+	@docker image rm -f srcs_nginx srcs_wordpress srcs_mariadb
 
 fclean:
 	@make clean
-	@docker image rm -f srcs-nginx srcs-wordpress srcs-mariadb
+	@docker buildx prune
+	@sudo rm -rf /home/jonghopa/data/wp
+	@sudo rm -rf /home/jonghopa/data/db
+	@docker volume rm -f ft_db
+	@docker volume rm -f ft_wp
 
 re:
-	@make fclean
+	@make clean
 	@make build
 
-.PHONY: build clean fclean re
+.PHONY: build down clean fclean re
